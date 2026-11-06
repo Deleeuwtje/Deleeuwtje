@@ -15,7 +15,7 @@ Een karaktervolle serif voor hoofdstuktitels en belangrijke verhaalregels. Een r
 
 ## Schermopbouw
 - Titelscherm: titel, sfeerzin, duidelijke start/verder-knop en illustratief scènevlak.
-- Actiescherm: speler-sprite, de 2D wereld, een soort van diagonaal tussen top-down en side view in. 
+- Actiescherm: speler-sprite in een 2D-wereld met een driekwartperspectief tussen top-down en side-view. Lagen maken hoogte leesbaar: grond, objecten, personage, voorgrond.
 - Verhaalscherm: scènebeeld of kleurvlak, titel en tekst, met keuzes als grote knoppen.
 - Pauzemenu: hervatten, instellingen en terug naar titel; niet over verhaaltekst heen.
 - Einde: geef de laatste scène ruimte en bied opnieuw spelen of terug naar titel.
@@ -24,5 +24,8 @@ Een karaktervolle serif voor hoofdstuktitels en belangrijke verhaalregels. Een r
 ## Interactie en toegankelijkheid
 Alle acties zijn toetsenbordbedienbaar met zichtbare focus. Knoppen hebben hover-, focus-, disabled- en actieve toestanden. Respecteer gereduceerde beweging. Streef naar WCAG AA tekstcontrast en ruime aanraakdoelen. Statusberichten worden semantisch aangekondigd.
 
+## Pixelstijl
+Handgemaakte sprites met beperkte paletten en scherpe silhouetten. Gebruik geen smoothing of wazige filters. Houd animatie spaarzaam: lopen, een vlam, rook en korte impactframes. Tekst blijft altijd scherp en krijgt geen pixel-filter. De eerste canvasproef gebruikt blokvormige grondtegels, diepte-lagen, props en een bestuurbare held.
+
 ## Huidige stijlproef
-De startpagina gebruikt nachtgroen, papierwit, koperaccent, een grote serifkop en een abstract maanlandschap in CSS. De knop blijft uitgeschakeld tot er verhaalcontent bestaat. Dit is een technische fundering en verkenning, geen definitieve art direction.
+Nachtgroen, papierwit, koperaccent, een grote serifkop en een abstract maanlandschap zetten de sfeer. De gameplayproef gebruikt een driekwart pixelwereld. Dit is een verkenning van de beeldtaal; definitieve sprites en scènekunst komen later.

@@ -1,11 +1,11 @@
 # Architectuur
 
-## Doel
-Een browsergebaseerde, korte verhalende RPG. Verhaalinhoud wordt later als data toegevoegd; engine en interface hoeven dan niet per verhaal herschreven te worden. De huidige app toont alleen een startscherm en bevat geen speelbaar verhaal.
+## Doel en huidige status
+Een browsergebaseerde, korte verhalen-RPG rond dezelfde held. De eerste twee afleveringen zijn als data toegevoegd; aflevering 1 is een korte introductieroute en aflevering 2 is nu een speelbare opening plus een uitgewerkte vierdelige ontwerpoutline. De laatste is nog geen vier uur aan speelbare content.
 
 ## Stack en runtime
 - Vite + TypeScript, zonder UI-framework of externe runtime-dependencies.
-- Statische browserapp. Geen server, accounts, analytics of netwerktoegang nodig.
+- Statische browserapp; voortgang wordt lokaal per browser bewaard.
 - TypeScript strict mode en aanvullende checks op ontbrekende waarden en control-flow fouten.
 
 ## Afhankelijkheidsrichting
@@ -13,37 +13,37 @@ Een browsergebaseerde, korte verhalende RPG. Verhaalinhoud wordt later als data 
                       ↑          ↑
                  infrastructuur ┘
 
-- Domein (src/domain): verhaalstructuur, sessiestatus en zuivere overgangen; geen browser-API's.
-- Applicatie (src/application): orkestreert domeinacties en bewaakt content bij het starten.
-- Infrastructuur (src/infrastructure): adapters voor browseropslag.
-- Presentatie (src/ui): schermen tonen toestand en sturen intenties door; geen spelregels.
-- Content wordt los toegevoegd en gevalideerd bij het laden.
+- Domein (src/domain): verhaalstructuur, sessiestatus, campaign-profiel en zuivere overgangen; geen DOM of browser-opslag.
+- Content (src/content): afleveringen als data; keuzes verwijzen via stabiele scène-ID's.
+- Applicatie: GameController valideert content en coördineert keuzes.
+- Presentatie (src/ui): pixelwereld en schermen tonen data en sturen intenties door.
+- Infrastructuur: browseropslag en andere platform-adapters.
 
-## Content en sessies
-Een verhaal heeft een ID, titel, startscène en scènes. Elke scène heeft een titel, paragrafen en keuzes met verwijzingen naar volgende scènes. De validator controleert unieke ID's, een geldige startscène en bestaande doel-scènes.
-
-Een sessie bewaart alleen stabiele ID's: huidig/bezochte scènes en gekozen keuzes. chooseOption is een pure overgang: een ongeldige keuze verandert de sessie niet. Nieuwe systemen (inventaris, relaties, variabelen) horen later in expliciete domeintypes en regels, niet als losse UI-voorwaarden.
+## Campagne en content
+Een verhaal heeft een ID, titel, startscène en scènes. Scènes hebben locatie, tekst, encountertype en keuzes. De validator controleert scène-ID's en verwijzingen. Een sessie slaat alleen scène- en keuze-ID's op. Het campagneprofiel is los van de sessie en houdt inventaris, uitrusting, upgrades en vrijgespeelde verhalen bij, zodat vondsten meegaan naar volgende afleveringen.
 
 ## Opslag
-Savebestanden zijn JSON-enveloppen met een versienummer. Data wordt bij het lezen als onbetrouwbaar behandeld. Schemawijzigingen vereisen migratie of gecontroleerde afwijzing. Browseropslag kan ontbreken of vol zijn; de game moet dan gecontroleerd doorgaan zonder crash.
+Voortgang staat in versie-gemarkeerde lokale browseropslag. JSON uit opslag wordt als onbetrouwbare invoer behandeld. Opslag kan uitgeschakeld of vol zijn; doorspelen mag dan niet crashen. De huidige versie heeft eenvoudige versie-sleutels; migraties zijn nodig zodra het opslagformaat verandert.
 
-## Projectindeling
+## Indeling
     src/
       application/    use-cases en coördinatie
-      domain/         contentcontracten en pure spelregels
-      infrastructure/ browser-API-adapters
-      ui/             presentatie
+      content/        afleveringdata
+      domain/         regels, sessies en campagneprofiel
+      infrastructure/ opslagadapters
+      ui/             pixelwereld en presentatie
       main.ts         app-startpunt
       styles.css
-    docs/               architectuur
+    docs/               architectuur en verhaalbijbel
     styles.md           visuele richting
 
 ## Betrouwbaarheidsafspraken
 - Houd domeintransities deterministisch en zonder verborgen browserstatus.
-- Valideer content en saves bij grenzen waar data binnenkomt.
-- Sla geen volledige scènekopieën op; gebruik stabiele ID's.
+- Valideer content en saves waar data de applicatie binnenkomt.
+- Sla stabiele ID's op, geen volledige scènekopieën.
 - Houd UI semantisch, toetsenbordbedienbaar en vriendelijk voor gereduceerde beweging.
-- Voeg lockfile en geautomatiseerde checks toe wanneer installatie en CI worden ingericht.
+- Gevechten en puzzels mogen optioneel zijn; voorkom dat keuzes de hoofdroute onbereikbaar maken.
+- Voeg lockfile en automatische checks toe wanneer de installatie/CI wordt ingericht.
 
-## Lokale commando's
-npm install · npm run dev · npm run typecheck · npm run build · npm run preview
+## Lokaal starten
+Op Windows PowerShell: npm.cmd install, npm.cmd run dev, npm.cmd run typecheck en npm.cmd run build.
