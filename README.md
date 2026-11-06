@@ -1,8 +1,5 @@
 ## Hi there 👋
 
-<!--
-**Deleeuwtje/Deleeuwtje** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+This is the first repository. ChatGPT will work here. All code is written by ai. And no human may tough any code besides the .md files. You can change this code how you want, if you tell an ai to change it.
 
-Here are some ideas to get you started:
-
-this is the first repository. chatGPT will work here.
+## Thank you, DiedJ
