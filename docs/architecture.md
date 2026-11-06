@@ -1,60 +1,49 @@
 # Architectuur
 
-## Doel en grenzen
+## Doel
+Een browsergebaseerde, korte verhalende RPG. Verhaalinhoud wordt later als data toegevoegd; engine en interface hoeven dan niet per verhaal herschreven te worden. De huidige app toont alleen een startscherm en bevat geen speelbaar verhaal.
 
-Deze repository is de basis voor een korte, verhalende browser-RPG. Deze eerste stap bevat alleen de technische app-shell en ontwikkelconfiguratie; er is nog geen verhaal, spelwereld, spelmechaniek of opgeslagen voortgang.
+## Stack en runtime
+- Vite + TypeScript, zonder UI-framework of externe runtime-dependencies.
+- Statische browserapp. Geen server, accounts, analytics of netwerktoegang nodig.
+- TypeScript strict mode en aanvullende checks op ontbrekende waarden en control-flow fouten.
 
-## Technologiekeuze
+## Afhankelijkheidsrichting
+    presentatie → applicatie → domein
+                      ↑          ↑
+                 infrastructuur ┘
 
-- **Vite + TypeScript** voor een snelle lokale ontwikkelserver en een statische browserbuild.
-- **Vanilla DOM** voorlopig, zodat er geen UI-framework of runtime-abonnement nodig is voordat de interface daarom vraagt.
-- **Browser als runtime**. Er is geen server, account, analytics of netwerktoegang nodig voor de basis.
-- **TypeScript strict mode** plus checks op onbedoelde ontbrekende waarden en control-flow fouten.
+- Domein (src/domain): verhaalstructuur, sessiestatus en zuivere overgangen; geen browser-API's.
+- Applicatie (src/application): orkestreert domeinacties en bewaakt content bij het starten.
+- Infrastructuur (src/infrastructure): adapters voor browseropslag.
+- Presentatie (src/ui): schermen tonen toestand en sturen intenties door; geen spelregels.
+- Content wordt los toegevoegd en gevalideerd bij het laden.
 
-## Beoogde grenzen
+## Content en sessies
+Een verhaal heeft een ID, titel, startscène en scènes. Elke scène heeft een titel, paragrafen en keuzes met verwijzingen naar volgende scènes. De validator controleert unieke ID's, een geldige startscène en bestaande doel-scènes.
 
-Als spelcode wordt toegevoegd, houd de afhankelijkheden in deze richting:
+Een sessie bewaart alleen stabiele ID's: huidig/bezochte scènes en gekozen keuzes. chooseOption is een pure overgang: een ongeldige keuze verandert de sessie niet. Nieuwe systemen (inventaris, relaties, variabelen) horen later in expliciete domeintypes en regels, niet als losse UI-voorwaarden.
 
-```text
-UI / presentatie
-      ↓
-applicatie (use-cases en coördinatie)
-      ↓
-domein (regels en state, zonder browser-API's)
-      ↑
-infrastructuur (opslag, audio, platform-API's)
-```
+## Opslag
+Savebestanden zijn JSON-enveloppen met een versienummer. Data wordt bij het lezen als onbetrouwbaar behandeld. Schemawijzigingen vereisen migratie of gecontroleerde afwijzing. Browseropslag kan ontbreken of vol zijn; de game moet dan gecontroleerd doorgaan zonder crash.
 
-- **Domein:** pure regels en getypeerde speldata; geen DOM, opslag of netwerk.
-- **Applicatie:** orkestreert acties en valideert overgangen tussen toestanden.
-- **Infrastructuur:** implementeert interfaces voor browseropslag en andere externe API's.
-- **Presentatie:** toont toestand en stuurt gebruikersacties door; bevat geen spelregels.
-- Verhaal en content blijven data, los van de code die ze afspeelt.
+## Projectindeling
+    src/
+      application/    use-cases en coördinatie
+      domain/         contentcontracten en pure spelregels
+      infrastructure/ browser-API-adapters
+      ui/             presentatie
+      main.ts         app-startpunt
+      styles.css
+    docs/               architectuur
+    styles.md           visuele richting
 
 ## Betrouwbaarheidsafspraken
-
-- Valideer data die van buiten het domein komt, zoals opgeslagen voortgang.
-- Geef save-data een schema-versie en migreer versies expliciet; verwijder corrupte data gecontroleerd.
-- Houd domeinfuncties deterministisch waar dat kan, zodat spelregels later eenvoudig te testen zijn.
-- Behandel opslaan als een optionele adapter: de game moet gecontroleerd kunnen starten als browseropslag ontbreekt.
-- Voeg dependency-lockfile en geautomatiseerde checks toe zodra de lokale projectinstallatie is ingericht.
-- Voeg geen backend toe zolang er geen concrete online functie (zoals accounts of multiplayer) nodig is.
-
-## Projectstructuur
-
-```text
-src/
-  main.ts       # app-startpunt en mountcontrole
-  styles.css    # globale basisstijl
-docs/
-  architecture.md
-```
+- Houd domeintransities deterministisch en zonder verborgen browserstatus.
+- Valideer content en saves bij grenzen waar data binnenkomt.
+- Sla geen volledige scènekopieën op; gebruik stabiele ID's.
+- Houd UI semantisch, toetsenbordbedienbaar en vriendelijk voor gereduceerde beweging.
+- Voeg lockfile en geautomatiseerde checks toe wanneer installatie en CI worden ingericht.
 
 ## Lokale commando's
-
-- `npm install` installeert de ontwikkeltools.
-- `npm run dev` start de lokale ontwikkelserver.
-- `npm run typecheck` voert alleen TypeScript-controle uit.
-- `npm run build` controleert types en bouwt de statische site.
-- `npm run preview` serveert de gebouwde site lokaal.
-
+npm install · npm run dev · npm run typecheck · npm run build · npm run preview
