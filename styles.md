@@ -1,7 +1,7 @@
 # Visuele stijlrichting
 
 ## Gevoel
-Een korte, literaire indie-RPG: rustig, sfeervol en een tikje mysterieus. De interface voelt als een zorgvuldig vormgegeven boekomslag, niet als een dashboard. Verhaaltekst en keuzes krijgen straks het meeste gewicht.
+Een korte, literaire indie-RPG: rustig, sfeervol en een tikje middeleeuws. De interface voelt als een zorgvuldig vormgegeven boekomslag, niet als een dashboard. Verhaaltekst en keuzes krijgen straks het meeste gewicht.
 
 ## Kleur en materiaal
 - Nachtgroen als basis: diep en zachter dan puur zwart.
@@ -15,6 +15,7 @@ Een karaktervolle serif voor hoofdstuktitels en belangrijke verhaalregels. Een r
 
 ## Schermopbouw
 - Titelscherm: titel, sfeerzin, duidelijke start/verder-knop en illustratief scènevlak.
+- Actiescherm: speler-sprite, de 2D wereld, een soort van diagonaal tussen top-down en side view in. 
 - Verhaalscherm: scènebeeld of kleurvlak, titel en tekst, met keuzes als grote knoppen.
 - Pauzemenu: hervatten, instellingen en terug naar titel; niet over verhaaltekst heen.
 - Einde: geef de laatste scène ruimte en bied opnieuw spelen of terug naar titel.
