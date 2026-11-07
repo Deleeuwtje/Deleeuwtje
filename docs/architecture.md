@@ -1,49 +1,40 @@
 # Architectuur
 
 ## Doel en huidige status
-Een browsergebaseerde, korte verhalen-RPG rond dezelfde held. De eerste twee afleveringen zijn als data toegevoegd; aflevering 1 is een korte introductieroute en aflevering 2 is nu een speelbare opening plus een uitgewerkte vierdelige ontwerpoutline. De laatste is nog geen vier uur aan speelbare content.
 
-## Stack en runtime
-- Vite + TypeScript, zonder UI-framework of externe runtime-dependencies.
-- Statische browserapp; voortgang wordt lokaal per browser bewaard.
-- TypeScript strict mode en aanvullende checks op ontbrekende waarden en control-flow fouten.
+Een browser-RPG rond Aven. De game speelt in een doorlopende pixelwereld met een camera die Aven volgt. Personages en plaatsen starten korte, keuze-gedreven dialogen. Aflevering 1 is de introductieroute. Aflevering 2 bevat de speelbare hoofdroute van het vulkaanverhaal, maar is nog niet vier uur lang uitgewerkt.
 
-## Afhankelijkheidsrichting
-    presentatie → applicatie → domein
-                      ↑          ↑
-                 infrastructuur ┘
+## Stack
 
-- Domein (src/domain): verhaalstructuur, sessiestatus, campaign-profiel en zuivere overgangen; geen DOM of browser-opslag.
-- Content (src/content): afleveringen als data; keuzes verwijzen via stabiele scène-ID's.
-- Applicatie: GameController valideert content en coördineert keuzes.
-- Presentatie (src/ui): pixelwereld en schermen tonen data en sturen intenties door.
-- Infrastructuur: browseropslag en andere platform-adapters.
+- Vite + strict TypeScript zonder externe runtime-dependencies.
+- Canvas 2D voor de wereld; HTML voor dialoog, doelen en bediening.
+- Lokale browseropslag voor campagnestatus en de actuele scène per aflevering.
 
-## Campagne en content
-Een verhaal heeft een ID, titel, startscène en scènes. Scènes hebben locatie, tekst, encountertype en keuzes. De validator controleert scène-ID's en verwijzingen. Een sessie slaat alleen scène- en keuze-ID's op. Het campagneprofiel is los van de sessie en houdt inventaris, uitrusting, upgrades en vrijgespeelde verhalen bij, zodat vondsten meegaan naar volgende afleveringen.
+## Grenzen
 
-## Opslag
-Voortgang staat in versie-gemarkeerde lokale browseropslag. JSON uit opslag wordt als onbetrouwbare invoer behandeld. Opslag kan uitgeschakeld of vol zijn; doorspelen mag dan niet crashen. De huidige versie heeft eenvoudige versie-sleutels; migraties zijn nodig zodra het opslagformaat verandert.
+- src/domain: pure verhaal-, sessie- en campagneregels.
+- src/content: verhaaldata, NPC- en wereldposities.
+- src/application: valideert content en voert verhaalkeuzes uit.
+- src/ui: rendert camera, map, sprites en invoer.
+- src/main.ts: koppelt wereldinteracties, dialoog, opslag en de campagne.
 
-## Indeling
-    src/
-      application/    use-cases en coördinatie
-      content/        afleveringdata
-      domain/         regels, sessies en campagneprofiel
-      infrastructure/ opslagadapters
-      ui/             pixelwereld en presentatie
-      main.ts         app-startpunt
-      styles.css
-    docs/               architectuur en verhaalbijbel
-    styles.md           visuele richting
+## Wereldrenderer
 
-## Betrouwbaarheidsafspraken
-- Houd domeintransities deterministisch en zonder verborgen browserstatus.
-- Valideer content en saves waar data de applicatie binnenkomt.
-- Sla stabiele ID's op, geen volledige scènekopieën.
-- Houd UI semantisch, toetsenbordbedienbaar en vriendelijk voor gereduceerde beweging.
-- Gevechten en puzzels mogen optioneel zijn; voorkom dat keuzes de hoofdroute onbereikbaar maken.
-- Voeg lockfile en automatische checks toe wanneer de installatie/CI wordt ingericht.
+De renderer gebruikt een 480 × 270 intern pixelcanvas dat schermvullend wordt geschaald. De map is 1280 × 720 wereldeenheden. Aven beweegt binnen die grens en de camera volgt met lichte vertraging. Kaartdecor, objecten en personen worden in lagen getekend. Personen worden op voetpositie gesorteerd om diepte te suggereren.
+
+Elke verhaal-scène heeft via worldForScene één actief interactiepunt: bijvoorbeeld Oda, Rin, de klokkentoren of een lavamonster. Andere dorpelingen blijven zichtbaar als sfeerpersonages. De renderer geeft alleen een interactie door wanneer Aven dichtbij staat.
+
+## Dialoog en voortgang
+
+Een gesprek toont één tekstdeel tegelijk in een HTML-paneel en laat daarna keuzes zien. Een keuze past de pure GameController-sessie aan, kent eventuele vondsten toe en verplaatst het actieve interactiepunt. De wereld blijft zichtbaar tijdens gesprekken.
+
+Het campagnedossier staat los van de scènevoortgang. Het bevat inventaris, uitrusting, upgrades en voltooide afleveringen. Daardoor kan een gevonden voorwerp later een gesprek, route of mechaniek openen.
 
 ## Lokaal starten
-Op Windows PowerShell: npm.cmd install, npm.cmd run dev, npm.cmd run typecheck en npm.cmd run build.
+
+Op Windows PowerShell:
+
+    npm.cmd install
+    npm.cmd run dev
+    npm.cmd run typecheck
+    npm.cmd run build
